@@ -431,11 +431,10 @@ NSString *const SRHTTPResponseErrorKey = @"HTTPResponseStatusCode";
     }
 
     [self _readUntilHeaderCompleteWithCallback:^(SRWebSocket *socket,  NSData *data) {
-        CFHTTPMessageRef receivedHeaders = self->_receivedHTTPHeaders;
-        CFHTTPMessageAppendBytes(receivedHeaders, (const UInt8 *)data.bytes, data.length);
+        CFHTTPMessageAppendBytes(self->_receivedHTTPHeaders, (const UInt8 *)data.bytes, data.length);
 
-        if (CFHTTPMessageIsHeaderComplete(receivedHeaders)) {
-            SRDebugLog(@"Finished reading headers %@", CFBridgingRelease(CFHTTPMessageCopyAllHeaderFields(receivedHeaders)));
+        if (CFHTTPMessageIsHeaderComplete(self->_receivedHTTPHeaders)) {
+            SRDebugLog(@"Finished reading headers %@", CFBridgingRelease(CFHTTPMessageCopyAllHeaderFields(self->_receivedHTTPHeaders)));
             [self _HTTPHeadersDidFinish];
         } else {
             [self _readHTTPHeader];
@@ -978,7 +977,7 @@ static const uint8_t SRPayloadLenMask   = 0x7F;
             return;
         }
 
-        size_t extra_bytes_needed = header.masked ? sizeof(sself->_currentReadMaskKey) : 0;
+        size_t extra_bytes_needed = header.masked ? sizeof(self->_currentReadMaskKey) : 0;
 
         if (header.payload_length == 126) {
             extra_bytes_needed += sizeof(uint16_t);
@@ -1016,7 +1015,7 @@ static const uint8_t SRPayloadLenMask   = 0x7F;
                 }
 
                 if (header.masked) {
-                    assert(mapped_size >= sizeof(eself->_currentReadMaskOffset) + offset);
+                    assert(mapped_size >= sizeof(self->_currentReadMaskOffset) + offset);
                     memcpy(eself->_currentReadMaskKey, ((uint8_t *)mapped_buffer) + offset, sizeof(eself->_currentReadMaskKey));
                 }
 
@@ -1053,7 +1052,7 @@ static const uint8_t SRPayloadLenMask   = 0x7F;
 
         dispatch_data_t dataToSend = dispatch_data_create_subrange(_outputBuffer, _outputBufferOffset, dataLength - _outputBufferOffset);
         dispatch_data_apply(dataToSend, ^bool(dispatch_data_t region, size_t offset, const void *buffer, size_t size) {
-            NSInteger sentLength = [_outputStream write:buffer maxLength:size];
+            NSInteger sentLength = [self->_outputStream write:buffer maxLength:size];
             if (sentLength == -1) {
                 streamFailed = YES;
                 return false;
@@ -1263,7 +1262,7 @@ static const char CRLFCRLFBytes[] = {'\r', '\n', '\r', '\n'};
 
         if (consumer.readToCurrentFrame) {
             dispatch_data_apply(slice, ^bool(dispatch_data_t region, size_t offset, const void *buffer, size_t size) {
-                [_currentFrameData appendBytes:buffer length:size];
+                [self->_currentFrameData appendBytes:buffer length:size];
                 return true;
             });
 

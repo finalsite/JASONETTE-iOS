@@ -529,9 +529,7 @@ static NSString *_defaultService;
     query[(__bridge __strong id)kSecAttrAccount] = key;
 #if TARGET_OS_IOS
     if (floor(NSFoundationVersionNumber) > floor(1144.17)) { // iOS 9+
-        if(@available(iOS 9, *)){
-            query[(__bridge __strong id)kSecUseAuthenticationUI] = (__bridge id)kSecUseAuthenticationUIFail;
-        }
+        query[(__bridge __strong id)kSecUseAuthenticationUI] = (__bridge id)kSecUseAuthenticationUIFail;
 #if  __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_9_0
     } else if (floor(NSFoundationVersionNumber) > floor(1047.25)) { // iOS 8+
         query[(__bridge __strong id)kSecUseNoAuthenticationUI] = (__bridge id)kCFBooleanTrue;
@@ -957,7 +955,7 @@ static NSString *_defaultService;
 
 #pragma mark -
 
-#if TARGET_OS_IOS
+#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
 - (void)sharedPasswordWithCompletion:(void (^)(NSString *account, NSString *password, NSError *error))completion
 {
     NSString *domain = self.server.host;
@@ -1121,7 +1119,7 @@ static NSString *_defaultService;
         if (_server.host) {
             query[(__bridge __strong id)kSecAttrServer] = _server.host;
         }
-        if (_server.port) {
+        if (_server.port != nil) {
             query[(__bridge __strong id)kSecAttrPort] = _server.port;
         }
         CFTypeRef protocolTypeObject = [self protocolTypeObject];
@@ -1147,9 +1145,7 @@ static NSString *_defaultService;
     if (!_useAuthenticationUI) {
 #if TARGET_OS_IOS
         if (floor(NSFoundationVersionNumber) > floor(1144.17)) { // iOS 9+
-            if(@available(iOS 9, *)){
-                query[(__bridge __strong id)kSecUseAuthenticationUI] = (__bridge id)kSecUseAuthenticationUIFail;
-            }
+            query[(__bridge __strong id)kSecUseAuthenticationUI] = (__bridge id)kSecUseAuthenticationUIFail;
 #if  __IPHONE_OS_VERSION_MIN_REQUIRED < __IPHONE_9_0
         } else if (floor(NSFoundationVersionNumber) > floor(1047.25)) { // iOS 8+
             query[(__bridge __strong id)kSecUseNoAuthenticationUI] = (__bridge id)kCFBooleanTrue;
@@ -1343,16 +1339,12 @@ static NSString *_defaultService;
             return kSecAttrAccessibleWhenUnlocked;
         case UICKeyChainStoreAccessibilityAfterFirstUnlock:
             return kSecAttrAccessibleAfterFirstUnlock;
-        case UICKeyChainStoreAccessibilityAlways:
-            return kSecAttrAccessibleAlways;
         case UICKeyChainStoreAccessibilityWhenPasscodeSetThisDeviceOnly:
             return kSecAttrAccessibleWhenPasscodeSetThisDeviceOnly;
         case UICKeyChainStoreAccessibilityWhenUnlockedThisDeviceOnly:
             return kSecAttrAccessibleWhenUnlockedThisDeviceOnly;
         case UICKeyChainStoreAccessibilityAfterFirstUnlockThisDeviceOnly:
             return kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;
-        case UICKeyChainStoreAccessibilityAlwaysThisDeviceOnly:
-            return kSecAttrAccessibleAlwaysThisDeviceOnly;
         default:
             return nil;
     }

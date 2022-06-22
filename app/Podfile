@@ -15,14 +15,14 @@ target 'Finalsite' do
   
   # Networking
   pod 'Reachability'#, :git => 'https://github.com/jasonelle/ios-pod-reachability.git', :branch => 'jasonelle'
-  pod 'SocketRocket'#, :git => 'https://github.com/jasonelle/ios-pod-socketrocket.git', :branch => 'jasonelle'
+  pod 'SocketRocket', :git => 'https://github.com/jasonelle/ios-pod-socketrocket.git', :branch => 'jasonelle'
   pod 'AFNetworking'#, :git => 'https://github.com/jasonelle/ios-pod-afnetworking.git', :branch => 'jasonelle'
   pod 'TDOAuth'
   pod "AFOAuth2Manager"
   
   # Audio
   pod 'IQAudioRecorderController'
-  pod 'FreeStreamer', :git => "https://github.com/muhku/FreeStreamer.git"
+  pod 'FreeStreamer', :git => "https://github.com/muhku/FreeStreamer.git", :branch => 'master'
   
   # Views
   pod 'MBProgressHUD', :git => 'https://github.com/patrickramirezfs/MBProgressHUD.git', :branch => 'jasonelle'

@@ -266,8 +266,8 @@ static const CGFloat kCancelButtonShadowHeightRatio = 0.333f;
     if ([self isVisible]) {
         return;
     }
-
-    self.previousKeyWindow = [UIApplication sharedApplication].keyWindow;
+    
+    self.previousKeyWindow = [UIApplication sharedApplication].delegate.window;
     UIImage *previousKeyWindowSnapshot = [self.previousKeyWindow ahk_snapshot];
 
     [self setUpNewWindow];
@@ -462,7 +462,8 @@ static const CGFloat kCancelButtonShadowHeightRatio = 0.333f;
 
 - (void)setUpTableView
 {
-    CGRect statusBarViewRect = [self convertRect:[UIApplication sharedApplication].statusBarFrame fromView:nil];
+   // view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0
+    CGRect statusBarViewRect = [self convertRect:[UIApplication sharedApplication].delegate.window.windowScene.statusBarManager.statusBarFrame fromView:nil];
     CGFloat statusBarHeight = CGRectGetHeight(statusBarViewRect);
     CGRect frame = CGRectMake(0,
                               statusBarHeight,
@@ -475,6 +476,13 @@ static const CGFloat kCancelButtonShadowHeightRatio = 0.333f;
 
     if (self.separatorColor) {
         tableView.separatorColor = self.separatorColor;
+    }
+    
+    // Fix indentation on iPad
+    // http://stackoverflow.com/questions/25770119/ios-8-uitableview-separator-inset-0-not-working/25877725#25877725
+    if([tableView respondsToSelector:@selector(setCellLayoutMarginsFollowReadableWidth:)])
+    {
+        tableView.cellLayoutMarginsFollowReadableWidth = NO;
     }
 
     tableView.delegate = self;
