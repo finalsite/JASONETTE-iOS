@@ -77,7 +77,7 @@
             DTLogWarning(@"Missing User Agent%@", error);
         } else {
             NSString *userAgent = result;
-            NSString *agent = [NSString stringWithFormat:@"%@ Finalsite-App/%@ Safari Version/%@", userAgent, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"], [UIDevice currentDevice].systemVersion];
+            NSString *agent = [NSString stringWithFormat:@"%@ Finalsite-App/%@ Safari/604.1 Version/%@", userAgent, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"], [UIDevice currentDevice].systemVersion];
 
             NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:agent, @"UserAgent", nil];
             [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
