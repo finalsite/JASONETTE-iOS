@@ -3255,6 +3255,10 @@
      * Linking View to another View
      *
      *******************************/
+    
+    JasonMemory *memory = [JasonMemory client];
+    BOOL isGoogleAuth = [memory._register[@"$jason"][@"authMethod"] isEqual:@"firebase/google"];
+    
     dispatch_async(dispatch_get_main_queue(), ^{
         
         // Dismiss searchbar before transitioning.
@@ -3282,8 +3286,16 @@
              * WebView using SFSafariViewController
              *
              ***************************************/
-            NSString *encoded_url = [JasonHelper linkify:href[@"url"]];
-            NSURL *URL = [NSURL URLWithString:encoded_url];
+            
+            // APP-470: Workaround `[JasonHelper linkify:href[@"url"]]` break the google login URL
+            NSURL *URL = nil;
+            if (isGoogleAuth) {
+                URL = [NSURL URLWithString:href[@"url"]];
+            } else {
+                NSString *encoded_url = [JasonHelper linkify:href[@"url"]];
+                URL = [NSURL URLWithString:encoded_url];
+            }
+            
             [self unlock];
             SFSafariViewController *vc = [[SFSafariViewController alloc] initWithURL:URL];
             
