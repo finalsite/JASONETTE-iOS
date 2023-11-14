@@ -72,18 +72,6 @@
     // Appending custom string on user agent so we can identify when we're using a webview embedded in the app
     _webView = [[WKWebView alloc] initWithFrame:CGRectZero];
 
-    [_webView evaluateJavaScript:@"navigator.userAgent" completionHandler:^(id _Nullable result, NSError * _Nullable error) {
-        if (error) {
-            DTLogWarning(@"Missing User Agent%@", error);
-        } else {
-            NSString *userAgent = result;
-            NSString *agent = [NSString stringWithFormat:@"%@ Finalsite-App/%@ Safari/604.1 Version/%@", userAgent, [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"], [UIDevice currentDevice].systemVersion];
-
-            NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:agent, @"UserAgent", nil];
-            [[NSUserDefaults standardUserDefaults] registerDefaults:dictionary];
-        }
-    }];
-
     if(launchOptions && launchOptions.count > 0 && launchOptions[UIApplicationLaunchOptionsURLKey]){
         // launched with url. so wait until openURL is called.
         self.launchURL = [launchOptions objectForKey:UIApplicationLaunchOptionsURLKey];
@@ -104,6 +92,31 @@
         [self openURL:self.launchURL type: @"start"];
         self.launchURL = nil;
     }
+}
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
+    // Close SFSafafriViewController
+    if ([self.window.rootViewController.presentedViewController isKindOfClass:[SFSafariViewController class]]) {
+        [self.window.rootViewController dismissViewControllerAnimated:true completion:nil];
+    }
+    
+    NSString *userToken = [url.absoluteString componentsSeparatedByString:@"token="].lastObject;
+    if (!userToken || userToken.length == 0) {
+        return false;
+    }
+    
+    [[Jason client] call:@{
+        @"type": @"$global.set",
+        @"options": @{
+          @"user_token": userToken
+        }
+    }];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [[Jason client] call:@{@"type": @"$appReload"} with:nil];
+    });
+    
+    return true;
 }
 
 - (BOOL) openURL: (NSURL *) url type: (NSString *) type{
