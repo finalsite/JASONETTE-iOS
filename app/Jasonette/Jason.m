@@ -3257,7 +3257,7 @@
      *******************************/
     
     JasonMemory *memory = [JasonMemory client];
-    BOOL isGoogleAuth = [memory._register[@"$jason"][@"authMethod"] isEqual:@"firebase/google"];
+    BOOL isGoogleOrOAuth = [memory._register[@"$jason"][@"authMethod"] isEqual:@"firebase/google"] || [memory._register[@"$jason"] objectForKey:@"oauth_redirect"];
     
     dispatch_async(dispatch_get_main_queue(), ^{
         
@@ -3289,7 +3289,7 @@
             
             // APP-470: Workaround `[JasonHelper linkify:href[@"url"]]` break the google login URL
             NSURL *URL = nil;
-            if (isGoogleAuth) {
+            if (isGoogleOrOAuth) {
                 URL = [NSURL URLWithString:href[@"url"]];
             } else {
                 NSString *encoded_url = [JasonHelper linkify:href[@"url"]];
