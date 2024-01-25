@@ -1298,7 +1298,6 @@
                         self.searchController.searchBar.returnKeyType = UIReturnKeySearch;
                         self.searchController.searchBar.barTintColor = backgroundColor;
                         self.searchController.searchBar.tintColor = color;
-                        //self.searchController.searchBar.backgroundColor = backgroundColor;
                         self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
                         self.searchController.searchBar.searchTextField.backgroundColor = backgroundColor;
                         
@@ -1318,10 +1317,8 @@
                             }
                         }
 
-                        if (@available(iOS 13.0, *)) {
-                            self.navigationItem.searchController = self.searchController;
-                            self.navigationItem.hidesSearchBarWhenScrolling = NO;
-                        }
+                        self.navigationItem.searchController = self.searchController;
+                        self.navigationItem.hidesSearchBarWhenScrolling = NO;
                         self.searchController.hidesNavigationBarDuringPresentation = NO;
 
                         [self.searchController.searchBar sizeToFit];
