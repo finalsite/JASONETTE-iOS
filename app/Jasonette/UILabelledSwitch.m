@@ -23,6 +23,9 @@
     [self addGestureRecognizer:tapGestureRecognizer];
     [switchView addTarget:self action:@selector(switchUpdated:) forControlEvents:UIControlEventValueChanged];
     
+    // Set content compression resistance priority for switch view
+    [switchView setContentCompressionResistancePriority:UILayoutPriorityRequired forAxis:UILayoutConstraintAxisHorizontal];
+    
    return self;
 }
 
