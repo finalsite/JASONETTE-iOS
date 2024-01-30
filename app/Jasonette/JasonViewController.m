@@ -281,9 +281,6 @@
     hasError = NO;
     self.playing = [[NSMutableArray alloc] init];
     [self.tableView deselectRowAtIndexPath:self.tableView.indexPathForSelectedRow animated:YES];
-    if(self.searchController){
-        self.tableView.tableHeaderView = self.searchController.searchBar;
-    }
     [[Jason client] attach:self];
 }
 - (void)viewWillDisappear:(BOOL)animated
@@ -968,7 +965,6 @@
     }
     
     searchBar.text = self.form[search_field_name];
-    [searchBar setShowsCancelButton:NO animated:YES];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
@@ -1302,8 +1298,8 @@
                         self.searchController.searchBar.returnKeyType = UIReturnKeySearch;
                         self.searchController.searchBar.barTintColor = backgroundColor;
                         self.searchController.searchBar.tintColor = color;
-                        self.searchController.searchBar.backgroundColor = backgroundColor;
                         self.searchController.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+                        self.searchController.searchBar.searchTextField.backgroundColor = backgroundColor;
                         
                         // Search bar textfield styling
                         NSArray *searchBarSubViews = [[self.searchController.searchBar.subviews objectAtIndex:0] subviews];
@@ -1321,9 +1317,8 @@
                             }
                         }
 
-                        if(!self.tableView.tableHeaderView) {
-                            self.tableView.tableHeaderView = self.searchController.searchBar;
-                        }
+                        self.navigationItem.searchController = self.searchController;
+                        self.navigationItem.hidesSearchBarWhenScrolling = NO;
                         self.searchController.hidesNavigationBarDuringPresentation = NO;
 
                         [self.searchController.searchBar sizeToFit];
