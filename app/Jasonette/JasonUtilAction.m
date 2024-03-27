@@ -269,6 +269,8 @@
     controller.excludedActivityTypes = excludeActivities;
     if(controller.popoverPresentationController){
         controller.popoverPresentationController.sourceView = self.VC.view;
+        controller.popoverPresentationController.sourceRect =  CGRectMake(self.VC.view.bounds.size.width / 2.0, self.VC.view.bounds.size.height / 2.0, 1.0, 1.0);
+        [controller.popoverPresentationController setPermittedArrowDirections:0];
     }
     
     // Present the controller
